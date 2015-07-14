@@ -1,8 +1,10 @@
 package cluster
 
 import (
+	"fmt"
 	"io"
 	"os"
+	"strings"
 )
 
 type Cmd struct {
@@ -35,12 +37,22 @@ func Command(nodes []string, name string, args ...string) *Cmd {
 // Run the command on all nodes serially.  At the end it returns an
 // error if any command errors.  All errors can be gotten from the
 // cmd.Errors
-func RunSerial() error {
+func (c *Cmd) RunSerial() error {
+	base_cmd := fmt.Sprintf("ssh %%s /bin/bash -lc \"%s %v\"", c.Path, strings.Join(c.Args, ""))
+
+	for _, val := range c.Nodes {
+		ssh_cmd := fmt.Sprintf(base_cmd, val)
+
+		fmt.Println(ssh_cmd)
+	}
+
 	// do something good
+	return nil
 }
 
 // Run all the commands in parallel, but wait until they are all
 // finished before returning the error status.
-func RunParallel() error {
+func (c *Cmd) RunParallel() error {
 	// do something good
+	return nil
 }
